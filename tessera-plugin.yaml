@@ -1,0 +1,51 @@
+# Volume controls: quieter, mute and louder, each running the Home Assistant action a person gives it. Across a tile
+# that is as wide as it is high or wider the keys stand as minus, mute, plus; down a taller tile louder is at the top. A
+# key without an action is left out and the others share the room. docs/MANIFEST.md has every field.
+id: volume_controls
+version: 0.1.0
+# 0.10 for tessera::tap_point(): which key the finger was on.
+api: "0.10"
+icon: volume-high
+maintainer: MrEcosse
+license: MIT
+stage: beta
+topics: [media, home]
+requires:
+  esphome: 2026.6.2
+boards: any
+flash_kb: 6
+
+permissions:
+  # A key performs whatever action a person types for it. These are the ones it is made for; the screen does not limit
+  # a key to this list (docs/MANIFEST.md, "permissions"), so read the README's "Good to know" before you add it.
+  home_assistant_actions:
+    - media_player.volume_down
+    - media_player.volume_up
+    - media_player.volume_mute
+    - remote.send_command
+    - script.turn_on
+    - button.press
+    - input_button.press
+    - scene.turn_on
+    - switch.turn_on
+    - switch.turn_off
+    - switch.toggle
+
+tiles:
+  - id: volume
+    name: tile_name
+    icon: volume-high
+    # The keys are centred and never higher than 14 mm, so a bigger tile only gives them room. A tile taller than wide
+    # stands them in a column.
+    sizes: { min: 1x1, max: 3x3 }
+    # Three keys of a block and an icon each, the line shown before any key has an action, and the three actions as
+    # the person typed them (in the tile's own object, which is in PSRAM).
+    memory: 1400
+    # The entity the keys act on unless a key names one of its own. A media player that is muted lights the mute key.
+    domains: [media_player, remote, script, button, input_button, switch, scene, automation]
+    attributes: [is_volume_muted]
+    example: tile_example
+    options:
+      - { id: down, kind: text, label: key_down, hint: key_down_hint }
+      - { id: mute, kind: text, label: key_mute, hint: key_mute_hint }
+      - { id: up, kind: text, label: key_up, hint: key_up_hint }
