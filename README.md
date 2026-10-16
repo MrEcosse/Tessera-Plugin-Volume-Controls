@@ -12,6 +12,28 @@ sit together in the middle of the tile:
 A key is never higher than 14 mm nor wider than half again its height, so a bigger tile only gives the keys room. The
 tile is one cell at least and up to 3x3.
 
+## Part of a set for wall panels
+
+This tile belongs to a set of four plugins for the same job: media controls that are screwed to a wall instead of held
+in the hand. Think of a conference room where the presenter needs the display's input, volume and menu without hunting
+for a remote, a sports bar where staff switch each TV to the right match and channel, a restaurant or lounge with
+background music and a screen behind the bar, a hotel or holiday-let lounge, a cinema room, or a shop-floor display.
+
+The four tiles share one idea. They are **bespoke**: each key or digit runs exactly the Home Assistant action you type,
+on exactly the entity you choose, so they work with anything Home Assistant can reach, including devices where the
+built-in tiles and Tessera's own remote card do not fit (an IR or Broadlink blaster, a Harmony hub, a streamer behind a
+script, a projector on a serial bridge, an LG webOS or Samsung TV). They all use the same action text, `action [entity]
+[field=value]`, so learning one means knowing them all, and each starts at one cell so it fits any layout.
+
+| Plugin | What it is for |
+|---|---|
+| [Transport controls](https://github.com/MrEcosse/Tessera-Plugin-Transport-Controls) | skip, stop, play, pause, eject |
+| [D-pad](https://github.com/MrEcosse/Tessera-Plugin-D-Pad) | arrows, OK, back, home, menu, guide |
+| [Volume controls](https://github.com/MrEcosse/Tessera-Plugin-Volume-Controls) | quieter, mute, louder |
+| [Number pad](https://github.com/MrEcosse/Tessera-Plugin-Number-Pad) | channels, TV or camera numbers (not PIN codes) |
+
+Use them side by side on one panel, or pick the one you need.
+
 ## Set up
 
 1. In Tessera, open **Plugins**, choose **Volume controls** and tick your screens. Each screen builds once with the
@@ -58,6 +80,47 @@ one field.
   How big a step is depends on the integration.
 - Works on every board, the CYD included. On a single cell of a small screen the keys get small; make the tile bigger
   to give them more room.
+
+## Limiting the volume
+
+The tile sends the actions you give it and has no volume limit of its own. Home Assistant has no built-in per-player
+limit either, so where a top or bottom level matters (a shop, a bar, a conference room, a child's room), put the limit
+where it cannot be skipped. From the strongest:
+
+1. **On the device.** Many amplifiers, receivers and speakers have a "maximum volume" setting in their own app. The
+   hardware enforces it whatever sends the command, whether this tile, Home Assistant or the device's own remote.
+2. **A wrapper player in Home Assistant.** The [Universal media
+   player](https://www.home-assistant.io/integrations/universal/) can replace a player's `volume_set`, `volume_up`,
+   `volume_down` and `volume_mute` commands. Point the tile's entity (or each key) at the wrapper instead of the real
+   player. An untested sketch that keeps `volume_set` between 20 % and 60 %:
+
+   ```yaml
+   media_player:
+     - platform: universal
+       name: Clamped receiver
+       children:
+         - media_player.receiver
+       commands:
+         volume_set:
+           action: media_player.volume_set
+           target:
+             entity_id: media_player.receiver
+           data:
+             volume_level: "{{ [[volume_level, 0.2] | max, 0.6] | min }}"
+       attributes:
+         volume_level: media_player.receiver|volume_level
+   ```
+
+   The docs do not describe clamping, so check it on your own system. A plain `volume_up` or `volume_down` steps by
+   whatever the integration decides and can pass the limit, so override those too, or give the keys a script that
+   checks the level first (`script.turn_on script.volume_up_limited`).
+3. **Put it back afterwards.** A blueprint such as [Media Player - Volume
+   limit](https://community.home-assistant.io/t/media-player-volume-limit) watches `volume_level` and resets the player
+   when it goes above a limit. It reacts after the fact, so there is a short spike, and it covers the upper limit only.
+
+A slider on Tessera's own volume tile can be limited with an `input_number` helper: Home Assistant enforces the
+helper's minimum and maximum, and an automation copies its value to the player. That limits the slider only, so use it
+together with one of the above.
 
 ## Good to know
 

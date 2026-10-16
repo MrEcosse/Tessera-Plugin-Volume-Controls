@@ -2,7 +2,7 @@
 # that is as wide as it is high or wider the keys stand as minus, mute, plus; down a taller tile louder is at the top. A
 # key without an action is left out and the others share the room. docs/MANIFEST.md has every field.
 id: volume_controls
-version: 0.1.0
+version: 0.1.2
 # 0.10 for tessera::tap_point(): which key the finger was on.
 api: "0.10"
 icon: volume-high
