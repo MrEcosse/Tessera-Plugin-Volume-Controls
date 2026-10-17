@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+- New option **Style**: Volume (the default, as before) or Channel. Channel shows two chevron keys, channel down and up,
+  and leaves the mute key out, for a TV's channel keys. A tile set up with an earlier version has no Style and is
+  unchanged. The plugin is now called Volume and channel controls; its id and tile are the same.
+
 ## 0.1.2
 - README: the use case (a set of four wall-panel tiles for conference rooms, sports bars and the like).
 

@@ -1,8 +1,10 @@
-# Volume controls: quieter, mute and louder, each running the Home Assistant action a person gives it. Across a tile
-# that is as wide as it is high or wider the keys stand as minus, mute, plus; down a taller tile louder is at the top. A
-# key without an action is left out and the others share the room. docs/MANIFEST.md has every field.
+# Volume and channel controls: up to three keys, each running the Home Assistant action a person gives it. As volume
+# keys they are quieter, mute and louder: across a tile that is as wide as it is high or wider they stand as minus, mute,
+# plus; down a taller tile louder is at the top. Set to channel, the same two keys (down and up) show as chevrons, for
+# channel up and down, and the mute key is left out. A key without an action is left out and the others share the room.
+# docs/MANIFEST.md has every field.
 id: volume_controls
-version: 0.1.2
+version: 0.2.0
 # 0.10 for tessera::tap_point(): which key the finger was on.
 api: "0.10"
 icon: volume-high
@@ -46,6 +48,10 @@ tiles:
     attributes: [is_volume_muted]
     example: tile_example
     options:
+      # Added in 0.2.0. The default is the volume keys every earlier version drew, so a tile set up before it is
+      # unchanged. The options are kept by their id, so where this one stands in the list changes nothing saved.
+      - { id: style, kind: choice, label: style, hint: style_hint, default: volume,
+          choices: [{ value: volume, label: style_volume }, { value: channel, label: style_channel }] }
       - { id: down, kind: text, label: key_down, hint: key_down_hint }
       - { id: mute, kind: text, label: key_mute, hint: key_mute_hint }
       - { id: up, kind: text, label: key_up, hint: key_up_hint }

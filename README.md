@@ -1,6 +1,6 @@
-# Volume controls
+# Volume and channel controls
 
-Three volume keys on one tile: quieter, mute and louder. Each key performs the Home Assistant action you give it, so the
+Three volume keys on one tile: quieter, mute and louder, or, with the **Channel** style, two keys for channel down and up. Each key performs the Home Assistant action you give it, so the
 same tile drives a media player, an amplifier behind an IR remote, or anything a script can reach.
 
 Give a key an action and it appears; leave it empty and it is left out, and the keys that are there share the room. They
@@ -11,6 +11,25 @@ sit together in the middle of the tile:
 
 A key is never higher than 14 mm nor wider than half again its height, so a bigger tile only gives the keys room. The
 tile is one cell at least and up to 3x3.
+
+## Volume or channel: the Style option
+
+**Style** (new in 0.2.0) chooses what the keys look like. **Volume**, the default, is everything above. **Channel** uses
+the same tile for channel down and up: the **Quieter** key becomes channel down and the **Louder** key channel up, drawn
+as chevrons (left and right across a tile, down and up in a column), and the mute key is left out whatever it holds. The
+actions are still whatever you type, so the tile is as bespoke as before.
+
+A tile set up before 0.2.0 has no Style and shows the volume keys it always did, so updating changes nothing. Put a
+volume tile and a channel tile on one page if you like: both use the one plugin.
+
+| For | Channel down | Channel up |
+|---|---|---|
+| An LG webOS TV | `webostv.button button=CHANNELDOWN` | `webostv.button button=CHANNELUP` |
+| An IR or Android TV remote | `remote.send_command command=CHANNEL_DOWN` | `remote.send_command command=CHANNEL_UP` |
+| A media player on Live TV | `media_player.media_previous_track` | `media_player.media_next_track` |
+
+The last row follows the integrations' own behaviour (on an LG TV on Live TV, next and previous track change channel);
+check it on your own device. The command names of a remote depend on its integration or learned codes.
 
 ## Part of a set for wall panels
 
@@ -29,16 +48,16 @@ script, a projector on a serial bridge, an LG webOS or Samsung TV). They all use
 |---|---|
 | [Transport controls](https://github.com/MrEcosse/Tessera-Plugin-Transport-Controls) | skip, stop, play, pause, eject |
 | [D-pad](https://github.com/MrEcosse/Tessera-Plugin-D-Pad) | arrows, OK, back, home, menu, guide |
-| [Volume controls](https://github.com/MrEcosse/Tessera-Plugin-Volume-Controls) | quieter, mute, louder |
+| [Volume controls](https://github.com/MrEcosse/Tessera-Plugin-Volume-Controls) | quieter, mute, louder; or channel down and up |
 | [Number pad](https://github.com/MrEcosse/Tessera-Plugin-Number-Pad) | channels, TV or camera numbers (not PIN codes) |
 
 Use them side by side on one panel, or pick the one you need.
 
 ## Set up
 
-1. In Tessera, open **Plugins**, choose **Volume controls** and tick your screens. Each screen builds once with the
+1. In Tessera, open **Plugins**, choose **Volume and channel controls** and tick your screens. Each screen builds once with the
    plugin.
-2. In Layout, place the **Volume controls** tile from the library's Plugins group.
+2. In Layout, place the **Volume and channel controls** tile from the library's Plugins group.
 3. In the inspector, choose the entity the keys act on: a media player, a remote, a script and so on.
 4. Type an action for each key you want, for example:
 

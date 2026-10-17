@@ -1,18 +1,24 @@
 {
-  "_meta": { "name": "English" },
+  "_meta": {
+    "name": "English"
+  },
   "screen": {
     "no_keys": "Give a key an action"
   },
   "app": {
-    "name": "Volume controls",
-    "summary": "Quieter, mute and louder, each running the Home Assistant action you choose.",
-    "tile_name": "Volume controls",
-    "tile_example": "Quieter, mute and louder, across a wide tile or down a tall one",
+    "name": "Volume and channel controls",
+    "summary": "Quieter, mute and louder, or channel down and up, each running the Home Assistant action you choose.",
+    "tile_name": "Volume and channel controls",
+    "tile_example": "Quieter, mute and louder, or channel down and up, across a wide tile or down a tall one",
     "key_down": "Quieter",
-    "key_down_hint": "The action of this key, such as media_player.volume_down. Leave it empty to leave the key out.",
+    "key_down_hint": "The action of this key, such as media_player.volume_down (volume) or webostv.button button=CHANNELDOWN (channel). Leave it empty to leave the key out.",
     "key_mute": "Mute",
-    "key_mute_hint": "Such as remote.send_command command=MUTE, or media_player.volume_mute is_volume_muted=true. Leave it empty to leave the key out.",
+    "key_mute_hint": "Volume style only; the channel style leaves it out. Such as remote.send_command command=MUTE, or media_player.volume_mute is_volume_muted=true. Leave it empty to leave the key out.",
     "key_up": "Louder",
-    "key_up_hint": "Such as media_player.volume_up. Leave it empty to leave the key out."
+    "key_up_hint": "The action of this key, such as media_player.volume_up (volume) or webostv.button button=CHANNELUP (channel). Leave it empty to leave the key out.",
+    "style": "Style",
+    "style_hint": "Volume shows quieter, mute and louder. Channel shows two chevron keys, channel down and up, and leaves the mute key out.",
+    "style_volume": "Volume",
+    "style_channel": "Channel"
   }
 }

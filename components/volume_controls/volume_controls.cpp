@@ -3,6 +3,7 @@
 #include "esphome/core/hal.h"
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 namespace esphome::volume_controls {
 
@@ -10,7 +11,7 @@ using tessera::Font;
 using tessera::Tone;
 namespace ui = tessera::ui;
 
-// The keys in the order the manifest lists them (quieter, mute, louder). Their icons are Material Design Icons of
+// The keys in the order the manifest lists them (quieter, mute, louder; as channel keys, down and up). Their icons are Material Design Icons of
 // Tessera's set. Across the tile they stand in this order, as minus, mute, plus; down a tile that is taller than wide
 // they stand the other way, louder at the top.
 struct KeyKind {
@@ -25,6 +26,13 @@ static constexpr KeyKind KINDS[] = {
 static constexpr int KIND_COUNT = sizeof(KINDS) / sizeof(KINDS[0]);
 enum Kind { DOWN, MUTE, UP };
 
+// The channel style (0.2.0): the same two keys as chevrons, pointing along the row across a tile that is as wide as it is
+// high or wider and up and down in a column. chevron-left/right, chevron-up/down.
+static uint32_t channel_glyph(Kind kind, bool across) {
+  if (across) return kind == UP ? 0xF0142 : 0xF0141;
+  return kind == UP ? 0xF0143 : 0xF0140;
+}
+
 // How long a key stays lit after a tap: at least this long, and until the next tick after it.
 static constexpr uint32_t FLASH_MS = 300;
 
@@ -38,8 +46,11 @@ class VolumeTile : public tessera::Tile {
     const char *entity = c.entity ? c.entity : "";
     detail::copy(entity_, sizeof entity_, entity, std::strlen(entity));
     player_ = std::strncmp(entity_, "media_player.", 13) == 0;
+    // A tile set up before this option has none, and gets the volume keys it always had.
+    channel_ = std::string(c.options["style"] | "volume") == "channel";
 
     for (int k = 0; k < KIND_COUNT; ++k) {
+      if (channel_ && k == MUTE) continue;  // channels have no mute key
       Key &key = keys_[count_];
       const Parsed parsed = parse(c.options[KINDS[k].option] | "", key.command);
       if (parsed == Parsed::EMPTY) continue;
@@ -100,7 +111,7 @@ class VolumeTile : public tessera::Tile {
       lv_obj_set_width(key.icon, kw_);
       lv_obj_set_style_text_align(key.icon, LV_TEXT_ALIGN_CENTER, 0);
       lv_obj_set_pos(key.icon, 0, (kh_ - line) / 2);
-      ui::set_text(key.icon, ui::icon(KINDS[key.kind].glyph));
+      ui::set_text(key.icon, ui::icon(channel_ ? channel_glyph(key.kind, across_) : KINDS[key.kind].glyph));
     }
     paint();
   }
@@ -197,6 +208,7 @@ class VolumeTile : public tessera::Tile {
   char entity_[128] = "";
   char state_[32] = "";
   bool player_ = false;
+  bool channel_ = false;
   bool muted_ = false;
   int flash_ = -1;
   bool flash_ok_ = false;
